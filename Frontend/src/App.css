@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+.LoginPanel{
+   color: white;
+  background-image: url("./assets/culture-india.png");
+  background-size:contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.loginmain{
+       background-image: url("./assets/LoginBG.jpg");
+       background-size:contain;
+}
+
+:root {
+  --saffron: #FF9933;
+  --green: #138808;
+  --chakra-blue: #000080;
+  --cream: #F9F7F2;
+  --paper-texture: url('/assets/subtle-mandala.png'); /* Light background image */
+}
+
+body {
+  background-color: var(--cream);
+  background-image: var(--paper-texture);
+  font-family: 'Open Sans', sans-serif;
+}
+
+.indian-card {
+  background: white;
+  border-radius: 8px;
+  border-top: 4px solid var(--saffron); /* The Indian Touch */
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  padding: 20px;
+}
+
+.namaste-header {
+  font-family: 'Poppins', sans-serif;
+  color: var(--chakra-blue);
+  font-weight: 700;
+}
+
+.mainbg{
+       background-image: url("./assets/mainbg8.jpg");
+       /* background-size:cover; */
+       background-repeat:repeat;
+       /* position: fixed; */
+
+}
