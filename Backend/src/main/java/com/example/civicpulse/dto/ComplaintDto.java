@@ -1,4 +1,6 @@
 package com.example.civicpulse.dto;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -44,6 +46,16 @@ public class ComplaintDto {
     private String proofImg;
     // getter/setter
 
+
+    private Integer rating;
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
     public Long getCitizenId() {
         return citizenId;
     }
@@ -145,7 +157,9 @@ public class ComplaintDto {
         this.createdAt = createdAt;
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate deadline;
+
     public LocalDate getDeadline() { return deadline; }
     public void setDeadline(LocalDate deadline) { this.deadline = deadline; }
 }

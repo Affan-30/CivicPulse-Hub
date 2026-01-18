@@ -6,14 +6,14 @@ import Dashboard from './components/Dashboard.jsx';
 import AdminDashboard from './components/AdminDashboard.jsx';
 import RegisterGrievance from './components/RegisterGrievance.jsx';
 import OfficerDashboard from './components/OfficerDashboard.jsx';
-
+import LandingPage from './components/LandingPage.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
         {/* Login page */}
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
 
         {/* Dashboard page shown after successful login */}

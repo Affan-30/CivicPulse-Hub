@@ -255,8 +255,31 @@ const OfficerDashboard = () => {
                       </td>
                       <td className='text-sm px-4 py-2'>
                         {complaint.feedback ? (
+                          <div className="flex flex-col items-center gap-2">
+                            {/* Stars if rating exists */}
+                            {complaint.rating && (
+                              <div className="flex flex-col items-center gap-1">
+                                <div className="flex items-center gap-1">
+                                  {[1, 2, 3, 4, 5].map((star) => (
+                                    <svg
+                                      key={star}
+                                      viewBox="0 0 24 24"
+                                      className={`w-4 h-4 ${star <= complaint.rating ? "text-yellow-400" : "text-gray-300"
+                                        }`}
+                                      fill="currentColor"
+                                    >
+                                      <path d="M12 .587l3.668 7.428 8.332 1.213-6 5.828-1.484 7.276L12 21.113l-6.516 3.414-1.484-7.276-6-5.828 8.332-1.213L12 .587z" />
+                                    </svg>
+                                  ))}
+                                </div>
+                                <span className="text-xs text-gray-500">
+                                  {complaint.rating} / 5
+                                </span>
+                              </div>
+                            )}
                           <div className='bg-green-200 px-1 py-2 rounded-xl border-2 border-green-500'>
                             <span >{complaint.feedback}</span>
+                          </div>
                           </div>
                         ) : (
                           <span>_</span>

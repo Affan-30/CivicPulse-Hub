@@ -21,6 +21,7 @@ export default function Login() {
   // NEW: Admin Officer fields (hidden by default)
   const [officerDepartment, setOfficerDepartment] = useState('');
   const [officerPhone, setOfficerPhone] = useState('');
+  const [secret, setSecret] = useState('');
 
   const navigate = useNavigate();
   const isValidEmail = (e) => /^\S+@\S+\.\S+$/.test(e);
@@ -90,8 +91,13 @@ export default function Login() {
     }
 
     // ✅ VALIDATE officer fields
-    if (role === 'OFFICER' && (!officerDepartment || !officerPhone)) {
-      setSignupError('Department and Phone are required for Admin Officer');
+    if (role === 'OFFICER' && (!officerDepartment || !officerPhone || secret != import.meta.env.VITE_ADMIN_SECRET_CODE)) {
+      setSignupError('UnAuthorized Access OR required fields are empty!');
+      return;
+    }
+
+    if(role === 'ADMIN' && (!secret || secret != import.meta.env.VITE_ADMIN_SECRET_CODE)){
+      setSignupError('(UnAuthorized Request!) : Invalid Secret Key')
       return;
     }
 
@@ -138,21 +144,23 @@ export default function Login() {
   return (
     <div className="loginmain min-h-screen flex flex-col items-center justify-center pt-0">
       <div className="left-0 right-0 flex justify-center pb-4 pt-0">
-        <h2 className="text-5xl font-bold text-black bg-amber-500 rounded-3xl p-4 pt-2 pb-2">CivicPulse Hub</h2>
+        <h2 className="text-3xl md:text-5xl font-bold text-black bg-amber-500 rounded-3xl p-4 pt-2 pb-2">CivicPulse Hub</h2>
       </div>
 
-      <div className="max-w-4xl w-full grid md:grid-cols-2 bg-white shadow-2xl rounded-2xl overflow-hidden">
+      <div className="max-w-4xl w-4/5 md:w-full grid md:grid-cols-2 bg-white shadow-2xl rounded-2xl overflow-hidden">
+
+        
         {/* Login Page Image */}
-        <div className="LoginPanel md:flex flex-col items-center justify-center p-8 text-white">
+        <div className="LoginPanel md:p-8 md:flex flex-col items-center justify-center p-10  text-white">
         </div>
 
         {/* Form */}
         <div className="p-8">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-3xl font-semibold">
+            <h3 className="text-2xl md:text-3xl font-semibold">
               {mode === 'login' ? 'Welcome back' : 'Create your account'}
             </h3>
-            <div className="text-sm">
+            <div className="text-xs md:text-sm">
               <button
                 onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
                 className="text-orange-400 hover:underline pl-8"
@@ -166,12 +174,12 @@ export default function Login() {
             // LOGIN FORM (unchanged)
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Email</label>
+                <label className="block text-sm md:text-sm md:font-medium md:mb-1">Email</label>
                 <input
                   type="email"
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
+                  className="w-full md:px-4 md:py-2 px-2 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
                   required
                 />
               </div>
@@ -182,7 +190,7 @@ export default function Login() {
                   type="password"
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
+                  className="w-full md:px-4 md:py-2 px-2 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
                   required
                 />
               </div>
@@ -190,8 +198,10 @@ export default function Login() {
               {loginError && <p className="text-sm text-red-600">{loginError}</p>}
 
               <div className="flex items-center justify-between">
-                <label className="text-sm">
-                  <input type="checkbox" className="mr-2" /> Remember me
+                <label className="md:text-sm text-xs ">
+                  <input type="checkbox" className="mr-2" /> 
+                  <br />
+                  Remember me
                 </label>
                 <button type="button" className="text-sm text-orange-400 hover:underline">Forgot password?</button>
               </div>
@@ -206,7 +216,7 @@ export default function Login() {
                 </button>
               </div>
 
-              <p className="text-xs text-center text-gray-500">By continuing you agree to our Terms & Privacy.</p>
+              <p className="md:text-xs text-xs text-center text-gray-500">By continuing you agree to our Terms & Privacy.</p>
 
             </form>
           ) : (
@@ -218,7 +228,7 @@ export default function Login() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
+                  className="w-full md:px-4 md:py-2 px-2 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
                   required
                 />
               </div>
@@ -235,7 +245,7 @@ export default function Login() {
                       setOfficerPhone('');
                     }
                   }}
-                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
+                  className="w-full md:px-4 md:py-2 px-2 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
                   required
                 >
                   <option value="USER">Citizen</option>
@@ -254,7 +264,7 @@ export default function Login() {
                     <select
                       value={officerDepartment}
                       onChange={(e) => setOfficerDepartment(e.target.value)}
-                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+                      className="w-full md:px-4 md:py-2 px-2 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
                       required
                     >
                       <option value="">Select Department</option>
@@ -273,12 +283,39 @@ export default function Login() {
                       placeholder="e.g. +91 9876543210"
                       value={officerPhone}
                       onChange={(e) => setOfficerPhone(e.target.value)}
-                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+                      className="w-full md:px-4 md:py-2 px-2 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
                       required
                     />
                   </div>
+                  <div>
+                   <label className="block text-sm font-medium mb-1">Admin Secrect Number *</label>
+                    <input
+                      type="tel"
+                      placeholder="Enter admin's secret key..."
+                      value={secret}
+                      onChange={(e) => setSecret(e.target.value)}
+                      className="w-full md:px-4 md:py-2 px-2 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+                      required
+                    />
+                </div>
                 </div>
               )}
+
+              {role === "ADMIN" && (
+                <div>
+                   <label className="block text-sm font-medium mb-1">Admin Secrect Number *</label>
+                    <input
+                      type="tel"
+                      placeholder="Enter admin's secret key..."
+                      value={secret}
+                      onChange={(e) => setSecret(e.target.value)}
+                      className="w-full md:px-4 md:py-2 px-2 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+                      required
+                    />
+                </div>
+              )
+
+              }
 
               <div>
                 <label className="block text-sm font-medium mb-1">Email *</label>
@@ -286,7 +323,7 @@ export default function Login() {
                   type="email"
                   value={signupEmail}
                   onChange={(e) => setSignupEmail(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
+                  className="w-full md:px-4 md:py-2 px-2 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
                   required
                 />
               </div>
@@ -298,7 +335,7 @@ export default function Login() {
                     type="password"
                     value={signupPassword}
                     onChange={(e) => setSignupPassword(e.target.value)}
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
+                    className="w-full md:px-4 md:py-2 px-2 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
                     required
                   />
                 </div>
@@ -308,7 +345,7 @@ export default function Login() {
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
+                    className="w-full md:px-4 md:py-2 px-2 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
                     required
                   />
                 </div>

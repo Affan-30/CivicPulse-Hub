@@ -6,6 +6,8 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Navbar from "./Navbar";
+import { format } from "date-fns";
+import { Doughnut, Bar } from "react-chartjs-2";
 
 const STATUSES = ["Pending", "Assigned", "Resolved - Pending Review", "Completed"];
 
@@ -17,7 +19,7 @@ const STATUS_PRIORITY = {
 };
 
 const AdminDashboard = () => {
-  
+
   const [complaints, setComplaints] = useState([]);
   const [officers, setOfficers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -26,10 +28,49 @@ const AdminDashboard = () => {
   const [sortBy, setSortBy] = useState("newest");
   const [statusUpdatingId, setStatusUpdatingId] = useState(null);
   const [assigningComplaintId, setAssigningComplaintId] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedOfficerId, setSelectedOfficerId] = useState("");
+
   // NEW: Modal state
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const totalComplaints = complaints.length;
+  const resolvedComplaints = complaints.filter((g) => g.status === "Completed" || g.status === "Resolved").length;
+  const inProgressComplaints = complaints.filter((g) => g.status === "Assigned" || g.status === "Resolved - Pending Review").length;
+  const RejectedComplaints = complaints.filter((g) => g.approvalStatus === "REJECTED").length;
+  const PendingComplaints = complaints.filter((g) => g.status === "Pending").length;
+  const satisfactionRate = totalComplaints > 0 ? Math.round((resolvedComplaints / totalComplaints) * 1000) / 10 : 0;
+
+
+  // Chart data remains exactly the same
+  const statusPieData = {
+    labels: ["Pending", "In Progress", "Resolved", "Rejected"],
+    datasets: [{
+      data: [PendingComplaints, inProgressComplaints, resolvedComplaints, RejectedComplaints],
+      backgroundColor: ["#facc15", "#3b82f6", "#22c55e", "#ef4444"],
+      borderWidth: 1
+    }]
+  };
+
+  const barChartData = {
+    labels: ["Pending", "In Progress", "Resolved", "Rejected"],
+    datasets: [{
+      label: "Complaints",
+      data: [PendingComplaints, inProgressComplaints, resolvedComplaints, RejectedComplaints],
+      backgroundColor: "#6366f1"
+    }]
+  };
+
+  const satisfactionChartData = {
+    labels: ["Satisfied", "Remaining"],
+    datasets: [{
+      data: [satisfactionRate, 100 - satisfactionRate],
+      backgroundColor: ["#16a34a", "#e5e7eb"],
+      borderWidth: 0
+    }]
+  };
 
   const token = localStorage.getItem("jwtToken");
 
@@ -63,7 +104,9 @@ const AdminDashboard = () => {
       let url = "http://localhost:8080/api/admin/complaints";
       if (departmentFilter) {
         const params = new URLSearchParams({ department: departmentFilter });
+        console.log(params);
         url += `?${params.toString()}`;
+        console.log(url)
       }
 
       const res = await fetch(url, {
@@ -94,8 +137,6 @@ const AdminDashboard = () => {
       const selectedOfficer = officers.find(o => o.id == officerId);
       const officerName = selectedOfficer?.name || "Unknown Officer";
 
-      const dateString = selectedDate.toISOString().split('T')[0];
-
       const res = await fetch(`http://localhost:8080/api/complaints/${complaintId}/assign`, {
         method: "PUT",
         headers: {
@@ -105,7 +146,9 @@ const AdminDashboard = () => {
         body: JSON.stringify({
           officerId: parseInt(officerId),
           officerName: officerName,
-          deadline: dateString,
+          deadline: selectedDate
+            ? format(selectedDate, "yyyy-MM-dd")
+            : null
         })
       });
 
@@ -188,20 +231,20 @@ const AdminDashboard = () => {
     });
     if (res.ok) {
       const updated = await res.json();
-      setSelectedComplaint(updated); 
-      await fetchOfficers();          
+      setSelectedComplaint(updated);
+      await fetchOfficers();
     }
 
   };
 
   const handleReject = async (id, reason) => {
-    const token = localStorage.getItem("jwtToken"); 
-  console.log("Reject token:", token);  
-  
-  if (!token) {
-    alert("Please login again - no token found");
-    return;
-  }
+    const token = localStorage.getItem("jwtToken");
+    console.log("Reject token:", token);
+
+    if (!token) {
+      alert("Please login again - no token found");
+      return;
+    }
     const res = await fetch(`http://localhost:8080/api/complaints/${id}/reject`, {
       method: "PUT",
       headers: {
@@ -212,8 +255,8 @@ const AdminDashboard = () => {
     });
     if (res.ok) {
       const updated = await res.json();
-      setSelectedComplaint(updated); 
-      await fetchOfficers();          
+      setSelectedComplaint(updated);
+      await fetchOfficers();
     }
 
   };
@@ -229,7 +272,7 @@ const AdminDashboard = () => {
       case "Completed": return "border-l-emerald-500 bg-emerald-50/30";
       case "Assigned": return "border-l-blue-500 bg-blue-50/30";
       case "Resolved - Pending Review": return "border-l-amber-500 bg-amber-50/30";
-      case "Rejected" : return "border-l-red-800 bg-red-500"
+      case "Rejected": return "border-l-red-800 bg-red-500"
       default: return "border-l-red-500 bg-red-50/30";
     }
   };
@@ -309,6 +352,111 @@ const AdminDashboard = () => {
             </div>
           </div>
         </div>
+
+        {/*  */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-0 pt-1 border-t border-orange-100/50 bg-linear-to-b from-slate-50/80 to-white/80 backdrop-blur-sm rounded-3xl p-8">
+
+          {/* Status Distribution Card */}
+          <div className="group relative bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/50 hover:border-blue-200/70 hover:shadow-3xl hover:-translate-y-2 transition-all duration-500 hover:scale-[1.02]">
+            <div className="absolute inset-0 bg-linear-to-br from-blue-500/5 to-indigo-500/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm"></div>
+            <h3 className="relative z-10 text-2xl font-black text-center mb-8 bg-linear-to-r from-blue-800 to-indigo-800 bg-clip-text text-transparent drop-shadow-lg tracking-tight">
+              Status Distribution
+            </h3>
+            <div className="relative z-10 flex justify-center">
+              <Doughnut
+                data={statusPieData}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: 'bottom',
+                      labels: {
+                        usePointStyle: true,
+                        padding: 20,
+                        font: { size: 13, weight: '600' },
+                        color: '#1f2937'
+                      }
+                    }
+                  },
+                  cutout: '0%',
+                  animation: { animateRotate: true, duration: 2000 }
+                }}
+              />
+
+            </div>
+          </div>
+
+          {/* Status Comparison Card */}
+          <div className="group relative bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/50 hover:border-purple-200/70 hover:shadow-3xl hover:-translate-y-2 transition-all duration-500 hover:scale-[1.02]">
+            <div className="absolute inset-0 bg-linear-to-br from-purple-500/5 to-pink-500/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm"></div>
+            <h3 className="relative z-10 text-2xl font-black text-center mb-8 bg-linear-to-r from-purple-800 to-pink-800 bg-clip-text text-transparent drop-shadow-lg tracking-tight">
+              Status Comparison
+            </h3>
+            <div className="relative z-10 pt-9 pb-7">
+              <Bar
+                data={barChartData}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                      backgroundColor: 'rgba(0,0,0,0.85)',
+                      titleColor: 'white',
+                      bodyColor: 'white',
+                      cornerRadius: 12
+                    }
+                  },
+                  scales: {
+                    x: {
+                      grid: { display: false },
+                      ticks: { font: { weight: '600' } }
+                    },
+                    y: {
+                      grid: { color: 'rgba(0,0,0,0.06)' },
+                      ticks: { font: { weight: 'bold' } }
+                    }
+                  },
+                  animation: { duration: 1500, easing: 'easeOutQuart' }
+                }}
+              />
+
+            </div>
+            <span className="justify-center items-center text-2xl text-blue-500 font-extrabold p-10 ">Total Complaints </span>
+            <span className="justify-center items-center text-4xl text-blue-700 font-extrabold p-30">{totalComplaints}</span>
+          </div>
+
+          {/* Satisfaction Rate Card */}
+          <div className="group relative bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/50 hover:border-emerald-200/70 hover:shadow-3xl hover:-translate-y-2 transition-all duration-500 hover:scale-[1.02] flex flex-col justify-center items-center">
+            <div className="absolute inset-0 bg-linear-to-br from-emerald-500/5 to-teal-500/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm"></div>
+            <h3 className="relative z-10 text-xl font-black text-center mb-6 bg-linear-to-r from-emerald-800 to-teal-800 bg-clip-text text-transparent drop-shadow-lg tracking-tight">
+              Satisfaction Rate
+            </h3>
+            <div className="relative w-32 h-32 mx-auto mb-6">
+              <Doughnut
+                data={satisfactionChartData}
+                options={{
+                  responsive: true,
+                  cutout: "70%",
+                  plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false }
+                  },
+                  animation: { animateRotate: true, duration: 2500 },
+                  circumference: 360,
+                  rotation: 0,
+                  maintainAspectRatio: false
+                }}
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-2xl font-black bg-linear-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent drop-shadow-2xl">
+                  {satisfactionRate}%
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        {/*  */}
 
         {/* Toolbar (UNCHANGED) */}
         <div className="bg-white p-2 rounded-2xl shadow-sm border border-slate-200 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -634,33 +782,46 @@ const AdminDashboard = () => {
                         </div>
 
                         {!selectedComplaint.officerId && (
-                          <div className="relative">
+                          <div className="flex flex-row gap-3 items-center">
+
                             <select
-                              onChange={(e) => handleAssignOfficer(selectedComplaint.id, e.target.value)}
+                              value={selectedOfficerId}
+                              onChange={(e) => setSelectedOfficerId(e.target.value)}
                               disabled={assigningComplaintId === selectedComplaint.id}
-                              className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                              className="px-4 py-1 border border-slate-300 rounded-lg text-xs"
                             >
-                              <option value="">Choose...</option>
+                              <option value="">Choose officer...</option>
                               {officers.map(o => (
-                                <option key={o.id} value={o.id}>{o.name} ({o.department})</option>
+                                <option key={o.id} value={o.id}>
+                                  {o.name} ({o.department})
+                                </option>
                               ))}
                             </select>
 
-                            <div className="flex flex-row gap-3">
-                              <button className="p-2 bg-white border border-slate-200 rounded-lg shadow-sm text-xs font-semibold text-slate-700 hover:text-indigo-600">
-                                Assign
-                              </button>
-                              <div className="flex flex-col gap-1 items-end">
-                                <DatePicker
-                                  selected={selectedDate}
-                                  onChange={(date) => setSelectedDate(date)}
-                                  dateFormat="yyyy-MM-dd"
-                                  className="w-25 px-1 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                />
-                              </div>
-                            </div>
+                            <DatePicker
+                              selected={selectedDate}
+                              onChange={(date) => setSelectedDate(date)}
+                              dateFormat="yyyy-MM-dd"
+                              minDate={new Date()}
+                              className="w-28 px-4 py-1 border border-gray-300 rounded-lg"
+                            />
+
+                            <button
+                              onClick={() => {
+                                if (!selectedOfficerId || !selectedDate) {
+                                  alert("Please select officer and deadline");
+                                  return;
+                                }
+                                handleAssignOfficer(selectedComplaint.id, selectedOfficerId);
+                              }}
+                              className="px-4 py-1 bg-indigo-600 text-white text-xs font-semibold rounded-lg hover:bg-indigo-700"
+                            >
+                              Done
+                            </button>
+
                           </div>
                         )}
+
                       </div>
 
                       {/* Status Update Control */}

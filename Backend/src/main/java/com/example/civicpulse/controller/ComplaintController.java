@@ -120,14 +120,26 @@ public ResponseEntity<ComplaintDto> assignOfficer(
     }
 
 
-    @PostMapping("/{id}/feedback")
-    public ResponseEntity<ComplaintDto> setFeedback(@PathVariable Long id, @RequestBody ComplaintDto req, Authentication authentication){
-        String complaint = authentication.getName();
-        ComplaintDto updated = complaintService.giveFeedback(id, req.getFeedback());
+//    @PostMapping("/{id}/feedback")
+//    public ResponseEntity<ComplaintDto> setFeedback(@PathVariable Long id, @RequestBody ComplaintDto req, Authentication authentication){
+//        String complaint = authentication.getName();
+//        ComplaintDto updated = complaintService.giveFeedback(id, req.getFeedback());
+//
+//        System.out.println(req.getOfficerId());
+//        System.out.println(req.getId());
+//        System.out.println(req.getFeedback());
+//
+//        return ResponseEntity.ok(updated);
+//    }
 
-        System.out.println(req.getOfficerId());
-        System.out.println(req.getId());
-        System.out.println(req.getFeedback());
+    @PostMapping("/{id}/rating")
+    public ResponseEntity<ComplaintDto> setRating(@PathVariable Long id, @RequestBody ComplaintDto req, Authentication authentication){
+        String complaint = authentication.getName();
+        ComplaintDto updated = complaintService.giveRating(id, req.getRating());
+
+        if(req.getFeedback() != null){
+            updated = complaintService.giveFeedback(id, req.getFeedback());
+        }
 
         return ResponseEntity.ok(updated);
     }

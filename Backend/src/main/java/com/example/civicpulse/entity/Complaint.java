@@ -78,6 +78,17 @@ public class Complaint {
 @Column(name = "deadline")
 private LocalDate deadline;
 
+    @Column(name = "rating")
+    private Integer rating;
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
     public LocalDate getDeadline() {
         return deadline;
     }

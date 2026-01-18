@@ -27,12 +27,11 @@ public class OfficerController {
         List<OfficerDto> dtos = officers.stream()
                 .map(o -> new OfficerDto(o.getId(), o.getName(), o.getDepartment()))
                 .collect(Collectors.toList());
-
-        System.out.println();
+        
         System.out.println("Active officers: " + dtos.size());
-        System.out.println(dtos.getFirst().getName());
-        System.out.println(dtos.get(1).getName());
-        System.out.println(dtos.getLast().getName());
+        for(int i=0; i<dtos.size(); i++){
+            System.out.println(dtos.get(i).getName());
+        }
         System.out.println();
         return ResponseEntity.ok(dtos);
     }

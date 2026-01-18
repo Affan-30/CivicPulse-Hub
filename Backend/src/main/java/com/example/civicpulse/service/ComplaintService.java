@@ -160,6 +160,7 @@ dto.setFeedback(c.getFeedback());
 dto.setDeadline(c.getDeadline());
 dto.setApprovalStatus(c.getApprovalStatus());
 dto.setApprovalReason(c.getApprovalReason());
+dto.setRating(c.getRating());
         return dto;
     }
 
@@ -243,6 +244,16 @@ dto.setApprovalReason(c.getApprovalReason());
         System.out.println(complaint.getDescription());
 
         complaint.setFeedback(feedback);
+        return toDto(complaintRepo.save(complaint));
+    }
+
+    public ComplaintDto giveRating(Long complaintId,int rating){
+        Complaint complaint = complaintRepo.findById(complaintId)
+                .orElseThrow(() -> new RuntimeException("Complaint not found"));
+
+        System.out.println(complaint.getDescription());
+
+        complaint.setRating(rating);
         return toDto(complaintRepo.save(complaint));
     }
 
