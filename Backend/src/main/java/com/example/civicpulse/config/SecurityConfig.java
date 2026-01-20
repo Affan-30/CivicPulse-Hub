@@ -47,6 +47,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
 
+                                .requestMatchers("/api/admin/complaints/line-chart").permitAll()
+
                         .requestMatchers("/api/complaints/*/reopen").hasRole("USER")
 
                         .requestMatchers("/api/complaints/*/approve").hasRole("ADMIN")

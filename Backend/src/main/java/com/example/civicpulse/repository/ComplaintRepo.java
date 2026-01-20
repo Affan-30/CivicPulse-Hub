@@ -30,4 +30,12 @@ public interface ComplaintRepo extends JpaRepository<Complaint, Long> {
             @Param("status") String status
     );
 
+    @Query("""
+SELECT DATE(c.createdAt), COUNT(c)
+FROM Complaint c
+GROUP BY DATE(c.createdAt)
+ORDER BY DATE(c.createdAt)
+""")
+    List<Object[]> getComplaintsPerDay();
+
 }
