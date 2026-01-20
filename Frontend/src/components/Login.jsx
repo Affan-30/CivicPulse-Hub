@@ -117,12 +117,12 @@ export default function Login() {
         signupData.phone = officerPhone;
       }
 
-      console.log('Sending to backend:', signupData); // DEBUG
+      console.log('Sending to backend:', signupData); 
 
       const res = await fetch('http://localhost:8080/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(signupData)  // ✅ Now includes department!
+        body: JSON.stringify(signupData)
       });
 
       if (!res.ok) {
@@ -171,7 +171,7 @@ export default function Login() {
           </div>
 
           {mode === 'login' ? (
-            // LOGIN FORM (unchanged)
+            // LOGIN FORM 
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
                 <label className="block text-sm md:text-sm md:font-medium md:mb-1">Email</label>
@@ -220,7 +220,6 @@ export default function Login() {
 
             </form>
           ) : (
-            // SIGNUP FORM with DYNAMIC OFFICER FIELDS
             <form onSubmit={handleSignup} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Full name</label>
@@ -239,7 +238,6 @@ export default function Login() {
                   value={role}
                   onChange={(e) => {
                     setRole(e.target.value);
-                    // Reset officer fields when not OFFICER
                     if (e.target.value !== 'OFFICER') {
                       // setOfficerDepartment('');
                       setOfficerPhone('');
@@ -254,7 +252,6 @@ export default function Login() {
                 </select>
               </div>
 
-              {/* NEW: Admin Officer Fields - SHOW ONLY WHEN SELECTED */}
               {role === 'OFFICER' && (
                 <div className="space-y-3 p-4 bg-blue-50 border-2 border-blue-200 rounded-xl">
                   <h4 className="font-bold text-blue-900 text-lg">Officer Details</h4>

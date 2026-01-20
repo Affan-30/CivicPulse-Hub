@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FileText, CheckCircle, AlertCircle, User, Clock, Edit3 } from 'react-feather';
-import Navbar from './Navbar'; // Your existing navbar
+import Navbar from './Navbar'; 
 
 const OfficerDashboard = () => {
   const [complaints, setComplaints] = useState([]);
@@ -14,11 +14,9 @@ const OfficerDashboard = () => {
   const officerName = localStorage.getItem('userName') || 'Officer';
   const officerDepartment = localStorage.getItem('officerDepartment') || 'Department';
 
-  // Stats
   const pendingCount = complaints.filter(c => c.status === 'Assigned').length;
   const resolvedCount = complaints.filter(c => c.status === 'Resolved - Pending Review').length;
 
-  // Fetch assigned complaints
   useEffect(() => {
     fetchAssignedComplaints();
   }, []);
@@ -64,7 +62,6 @@ const OfficerDashboard = () => {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`
-            // ❌ DO NOT set Content-Type manually
           },
           body: formData
         }

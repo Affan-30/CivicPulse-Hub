@@ -114,7 +114,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
 
-  // All existing functions remain exactly the same (isOverdue, handleDelete, handleReopen, submitRating, useEffect)
   const complaintForm = () => {
     setShowForm(true);
     navigate('/grievanceform');
@@ -770,65 +769,6 @@ const Dashboard = () => {
             )}
           </div>
         </section>
-
-        {/* 4. Notifications Section */}
-        {/* <section className={`transition-all duration-500 ${activeSection === 'notifications' ? 'block' : 'hidden'}`}>
-          <div className="bg-linear-to-br from-purple-50 via-pink-50 to-orange-50 rounded-3xl shadow-2xl p-8">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent flex items-center gap-3">
-                <Bell className="w-12 h-12 animate-bounce" />
-                Notifications
-              </h2>
-              <div className="flex items-center gap-4 text-sm text-gray-500">
-                <span>Mark all as read</span>
-                <RefreshCw className="w-5 h-5 hover:rotate-180 transition-transform cursor-pointer" />
-              </div>
-            </div>
-
-            <div className="space-y-4">
-            
-              <div className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all border-l-4 border-blue-500 hover:border-blue-600 cursor-pointer">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center shrink-0">
-                    <CheckCircle className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-gray-900 mb-1 group-hover:text-blue-700">Complaint #123 Resolved</p>
-                    <p className="text-sm text-gray-600 mb-2">Your water supply issue has been successfully resolved.</p>
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
-                      <span>2 hours ago</span>
-                      <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full font-medium">Rate Now</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all border-l-4 border-orange-500 hover:border-orange-600 cursor-pointer">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center shrink-0">
-                    <AlertCircle className="w-6 h-6 text-orange-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-gray-900 mb-1 group-hover:text-orange-700">Complaint #124 Overdue</p>
-                    <p className="text-sm text-gray-600 mb-2">Your road repair request is overdue. Consider re-opening.</p>
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
-                      <span>1 day ago</span>
-                      <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">Re-Open</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {notifications.length === 0 && (
-                <div className="text-center py-20">
-                  <Bell className="w-24 h-24 text-gray-300 mx-auto mb-8 animate-pulse" />
-                  <h3 className="text-2xl font-bold text-gray-500 mb-4">No notifications</h3>
-                  <p className="text-gray-400">You'll see updates about your grievances here</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </section> */}
       </div>
 
       {/* Rating Modal */}

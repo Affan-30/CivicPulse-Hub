@@ -33,8 +33,8 @@ function ComplaintsLineCharts() {
             {
               label: "Complaints Registered",
               data: data.map(item => item.count),
-              borderColor: "#2563eb",      // blue line
-              backgroundColor: "#93c5fd",  // light blue
+              borderColor: "#2563eb",      
+              backgroundColor: "#93c5fd",  
               pointBackgroundColor: "#1e40af",
               pointBorderColor: "#1e40af",
               tension: 0.4,
@@ -58,8 +58,8 @@ function ComplaintsLineCharts() {
             y: {
               beginAtZero: true,
               ticks: {
-                stepSize: 1,        // 🔑 forces natural numbers
-                precision: 0        // 🔑 removes decimals
+                stepSize: 1,   
+                precision: 0        
               },
               title: {
                 display: true,

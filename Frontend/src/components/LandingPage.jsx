@@ -208,7 +208,7 @@ const LandingPage = () => {
                 key={i}
                 variants={fadeInUp}
                 whileHover={{ y: -10 }}
-                className="bg-white p-10 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl transition-all group"
+                className="bg-white p-10 rounded-4xl border border-gray-100 shadow-sm hover:shadow-2xl transition-all group"
               >
                 <div className="mb-6 p-4 bg-gray-50 rounded-2xl w-fit group-hover:bg-orange-50 transition-colors">
                   {f.icon}

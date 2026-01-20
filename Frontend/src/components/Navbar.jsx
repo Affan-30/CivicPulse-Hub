@@ -7,7 +7,6 @@ export default function Navbar() {
     navigate('/login');
   };
 
-  // New handler for the Profile button
   const handleProfile = () => {
 
   };
@@ -16,7 +15,6 @@ export default function Navbar() {
     <nav className="md:fixed md:top-0.5 md:left-1 md:right-1 z-50 md:p-0 bg-linear-to-r md:rounded-4xl rounded-2xl bg-[#162f7a] border-b-4 border-amber-400 shadow-xl">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between ">
 
-        {/* Logo Section */}
         <div className="flex items-center space-x-2">
           
           <div className=" rounded-tl-2xl rounded-br-2xl px-2 py-1 backdrop-blur-sm flex flex-row  items-center">
@@ -26,23 +24,20 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex items-center gap-3">
 
-          {/* New Profile Button */}
           <button
             type="button"
             onClick={handleProfile}
             className="flex items-center gap-2 md:px-4 md:py-2 px-2 py-1 rounded-full bg-amber-100 text-red-900 font-bold border-2 border-amber-400 shadow-sm hover:bg-red-900 hover:text-amber-200 hover:shadow-lg hover:scale-105 transition-all duration-300"
           >
-            {/* Simple SVG User Icon */}
+
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
             </svg>
             <span className="hidden sm:inline">Profile</span>
           </button>
-
-          {/* Logout Button */}
+          
           <button
             type="button"
             onClick={handleLogout}
